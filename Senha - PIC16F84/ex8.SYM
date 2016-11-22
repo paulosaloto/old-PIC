@@ -1,0 +1,46 @@
+005     porta
+006     portb
+00C     @SCRATCH
+00D     @SCRATCH
+00D     _RETURN_
+00F     main.ok
+010     main.a
+011     main.tenta
+012     main.numero
+013-016 main.senha
+017-01A main.senha2
+01B     varredura.num2
+01B     main.@SCRATCH
+01C     @delay_ms1.P1
+01C     varredura.i
+01C     main.@SCRATCH
+01D     varredura.j
+01D     main.@SCRATCH
+01E     varredura.@SCRATCH
+01F     @MUL88.P1
+01F     varredura.@SCRATCH
+020     @MUL88.P1
+
+0088  @delay_ms1
+0029  varredura
+0080  @goto10035
+0004  @MUL88
+009D  main
+009D  @cinit
+
+Project Files:
+    C:\Documents and Settings\Paulo\Desktop\08\ex8.c
+    C:\Documents and Settings\Paulo\Desktop\PICC\Devices\16f84.h
+
+Compiler Settings:
+    Processor:      PIC16F84
+    Pointer Size:   8
+    Opt Level:      9
+    Short,Int,Long: 1,8,16
+
+Output Files:
+    Errors:      C:\Documents and Settings\Paulo\Desktop\08\ex8.err
+    INHX8:       C:\Documents and Settings\Paulo\Desktop\08\ex8.HEX
+    Symbols:     C:\Documents and Settings\Paulo\Desktop\08\ex8.SYM
+    List:        C:\Documents and Settings\Paulo\Desktop\08\ex8.LST
+    Debug/COFF:  C:\Documents and Settings\Paulo\Desktop\08\ex8.cof

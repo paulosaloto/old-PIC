@@ -1,0 +1,238 @@
+CCS PCM C Compiler, Version 3.207, 16465               16-fev-12 17:59
+
+               Filename: C:\Users\Paulo\Documents\Sistemas Digitais\Leds com interrupção\leds3.LST
+
+               ROM used: 149 words (2%)
+                         Largest free fragment is 2048
+               RAM used: 16 (9%) at main() level
+                         18 (10%) worst case
+               Stack:    3 worst case (1 in main + 2 for interrupts)
+
+*
+0000:  MOVLW  00
+0001:  MOVWF  0A
+0002:  GOTO   058
+0003:  NOP
+0004:  MOVWF  7F
+0005:  SWAPF  03,W
+0006:  CLRF   03
+0007:  MOVWF  21
+0008:  MOVF   0A,W
+0009:  MOVWF  20
+000A:  CLRF   0A
+000B:  MOVF   04,W
+000C:  MOVWF  22
+000D:  MOVF   77,W
+000E:  MOVWF  23
+000F:  MOVF   78,W
+0010:  MOVWF  24
+0011:  MOVF   79,W
+0012:  MOVWF  25
+0013:  MOVF   7A,W
+0014:  MOVWF  26
+0015:  MOVF   7B,W
+0016:  MOVWF  27
+0017:  BCF    03.7
+0018:  BCF    03.5
+0019:  BTFSS  0B.4
+001A:  GOTO   01D
+001B:  BTFSC  0B.1
+001C:  GOTO   030
+001D:  MOVF   22,W
+001E:  MOVWF  04
+001F:  MOVF   23,W
+0020:  MOVWF  77
+0021:  MOVF   24,W
+0022:  MOVWF  78
+0023:  MOVF   25,W
+0024:  MOVWF  79
+0025:  MOVF   26,W
+0026:  MOVWF  7A
+0027:  MOVF   27,W
+0028:  MOVWF  7B
+0029:  MOVF   20,W
+002A:  MOVWF  0A
+002B:  SWAPF  21,W
+002C:  MOVWF  03
+002D:  SWAPF  7F,F
+002E:  SWAPF  7F,W
+002F:  RETFIE
+0030:  BCF    0A.3
+0031:  BCF    0A.4
+0032:  GOTO   048
+....................                                      // PROGRAMA - SEQUÊNCIA DE LEDS USANDO INTERRUPÇÃO EXTERNA (RB0) - 16/02/2012  
+....................   
+.................... #include <16F877a.h>                //Inclui a biblioteca do pic 16F877A 
+....................  //////// Standard Header file for the PIC16F877A device ////////////////  
+.................... #device PIC16F877A  
+.................... #list  
+....................  
+.................... #fuses XT,NOWDT,NOPROTECT,PUT       //Define para o compilador: a faixa de frequência do clock (pode ser LS, XT, HS),  
+....................                                     //não uso do watchdog timer,  
+....................                                     //não uso de proteção de código,  
+....................                                     //uso do Power-up-timer, temporizador utilizado para inicialização do PIC.  
+....................   
+.................... #use delay(clock=4000000)           //Define a frequência de clock.  
+0033:  MOVLW  2C
+0034:  MOVWF  04
+0035:  MOVF   00,W
+0036:  BTFSC  03.2
+0037:  GOTO   047
+0038:  MOVLW  01
+0039:  MOVWF  78
+003A:  CLRF   77
+003B:  DECFSZ 77,F
+003C:  GOTO   03B
+003D:  DECFSZ 78,F
+003E:  GOTO   03A
+003F:  MOVLW  4A
+0040:  MOVWF  77
+0041:  DECFSZ 77,F
+0042:  GOTO   041
+0043:  NOP
+0044:  NOP
+0045:  DECFSZ 00,F
+0046:  GOTO   038
+0047:  RETLW  00
+....................   
+.................... #use fast_io(a)                     //Estas diretivas definem que o controle E/S das portas será definido pelo programador  
+.................... #use fast_io(b)  
+.................... #use fast_io(c)  
+.................... #use fast_io(d)  
+.................... #use fast_io(e)  
+....................   
+.................... #byte porta = 5                     // Definição de ponteiros para as portas  
+.................... #byte portb = 6  
+.................... #byte portc = 7  
+.................... #byte portd = 8  
+.................... #byte porte = 9  
+....................   
+.................... int dir=0;                          //insere a variável direcional que determina para que lado os bits serão rotacionados,  
+*
+0063:  CLRF   29
+....................                                     //que começa com valor=0 para que seja necessário pressionar o botão para a sequencia inicializar.  
+.................... #int_EXT                            //diretiva para a interrupção;  
+.................... void EXT_isr(void)                  //início da função de interrupção, que basicamente realiza o bounce da botoeira  
+.................... {                                   //e inverte o sentido de rotação.  
+....................    do {                             //o programa não faz nada enquanto o botão continuar pressionado.  
+....................       delay_ms(150);  
+*
+0048:  MOVLW  96
+0049:  MOVWF  2C
+004A:  CALL   033
+....................    }while (!bit_test(portb,0));  
+004B:  BTFSS  06.0
+004C:  GOTO   048
+....................    if (dir==0) dir=1;  
+004D:  MOVF   29,F
+004E:  BTFSS  03.2
+004F:  GOTO   053
+0050:  MOVLW  01
+0051:  MOVWF  29
+....................    else dir=0;  
+0052:  GOTO   054
+0053:  CLRF   29
+.................... }  
+....................   
+0054:  BCF    0B.1
+0055:  BCF    0A.3
+0056:  BCF    0A.4
+0057:  GOTO   01D
+.................... main()                              //função principal:  
+.................... {  
+0058:  CLRF   04
+0059:  MOVLW  1F
+005A:  ANDWF  03,F
+005B:  BSF    03.5
+005C:  BSF    1F.0
+005D:  BSF    1F.1
+005E:  BSF    1F.2
+005F:  BCF    1F.3
+0060:  MOVLW  07
+0061:  BCF    03.5
+0062:  MOVWF  1F
+....................    int work;                        //definição da variável auxiliar;  
+....................    enable_interrupts(global);       //habilita todas interrupções;  
+*
+0064:  MOVLW  C0
+0065:  IORWF  0B,F
+....................    enable_interrupts(int_ext);      //habilita as interrupções externas;  
+0066:  BSF    0B.4
+....................    ext_int_edge (H_TO_L);           //define como início da interrupção quando RB0 sai de nível lógico alto para baixo;  
+0067:  BSF    03.5
+0068:  BCF    01.6
+....................    set_tris_a(0x00);                //define que todas as vias da portA do PIC serão saídas;  
+0069:  MOVLW  00
+006A:  MOVWF  05
+....................    set_tris_d(0x00);                //define que todas as vias da portD do PIC serão saídas;  
+006B:  MOVWF  08
+....................    set_tris_b(0x01);                //define RB0 como entrada;  
+006C:  MOVLW  01
+006D:  MOVWF  06
+....................    port_b_pullups(TRUE);            //habilita os pull-ups;  
+006E:  BCF    01.7
+....................    portb = (0x00);                  //zera o portb;  
+006F:  BCF    03.5
+0070:  CLRF   06
+....................    portd = (0xFF);                  //define todos os leds acesos inicialmente;  
+0071:  MOVLW  FF
+0072:  MOVWF  08
+....................    work = (0xFF);                   //define o mesmo valor de portd para work;  
+0073:  MOVWF  2A
+....................    while (1)                        //início do looping principal;  
+....................    {  
+....................       if(dir!=0 && portd>0x00)      //para a dir=1 (sentido direito):  
+0074:  MOVF   29,F
+0075:  BTFSC  03.2
+0076:  GOTO   07E
+0077:  MOVF   08,F
+0078:  BTFSC  03.2
+0079:  GOTO   07E
+....................       {                             //se portd for maior que zero, ele roda os bits para a direita;  
+....................          rotate_right(&work,2);     //se for menor que zero, significa que já chegou ao final, não precisa executar;  
+007A:  RRF    2A,W
+007B:  RRF    2B,F
+007C:  RRF    2A,F
+....................          bit_clear (work,7);        //a rotação. depois de rotacionar, limpa o bit mais significativo, caso haja  
+007D:  BCF    2A.7
+....................       }                             //algum ruído vindo do carry.  
+....................   
+....................       if(dir==0 && work<0xFF)       //para dir==0, repete o mesmo procedimento anterior, só que vai rotacionando os bits  
+007E:  MOVF   29,F
+007F:  BTFSS  03.2
+0080:  GOTO   088
+0081:  INCFSZ 2A,W
+0082:  GOTO   084
+0083:  GOTO   088
+....................       {                             //para a esquerda e os acendendo;  
+....................          rotate_left(&work,2);  
+0084:  RLF    2B,W
+0085:  RLF    2A,F
+0086:  RLF    2B,F
+....................          bit_set (work,0);  
+0087:  BSF    2A.0
+....................       }  
+....................       portd=work;                   //aplica o valor rotacionado em portd;  
+0088:  MOVF   2A,W
+0089:  MOVWF  08
+008A:  CLRF   28
+008B:  BTFSC  0B.7
+008C:  BSF    28.7
+008D:  BCF    0B.7
+....................       delay_ms(200);                //dá o tempo necessário para perceber o 'movimento' das luzes.  
+008E:  MOVLW  C8
+008F:  MOVWF  2C
+0090:  CALL   033
+0091:  BTFSC  28.7
+0092:  BSF    0B.7
+....................   
+....................    }  
+0093:  GOTO   074
+.................... }  
+....................   
+....................   
+....................  
+0094:  SLEEP
+
+Configuration Fuses:
+   Word  1: 3FF1   XT NOWDT PUT NODEBUG NOPROTECT BROWNOUT LVP NOCPD NOWRT

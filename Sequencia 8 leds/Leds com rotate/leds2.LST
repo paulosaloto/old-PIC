@@ -1,0 +1,218 @@
+CCS PCM C Compiler, Version 3.207, 16465               16-fev-12 15:28
+
+               Filename: C:\Users\Paulo\Documents\Sistemas Digitais\Leds com rotate\leds2.LST
+
+               ROM used: 111 words (1%)
+                         Largest free fragment is 2048
+               RAM used: 7 (4%) at main() level
+                         8 (5%) worst case
+               Stack:    1 locations
+
+*
+0000:  MOVLW  00
+0001:  MOVWF  0A
+0002:  GOTO   019
+0003:  NOP
+....................  // Este programa realiza a contagem de 0 a 255 nos leds do Kit SD-1700.  
+....................   
+.................... #include <16F877a.h>             //Inclue a biblioteca 16F877a.h, disponível em 
+....................  //////// Standard Header file for the PIC16F877A device ////////////////  
+.................... #device PIC16F877A  
+.................... #list  
+....................  
+....................                                  // c:\Arquivos de programas\PICC\Devices  
+....................   
+.................... #fuses XT,NOWDT,NOPROTECT,PUT    //Define para o compilador: a faixa de frequência do clock (pode ser LS, XT, HS),  
+....................                                  //não uso do watchdog timer,  
+....................                                  //não uso de proteção de código,  
+....................                                  //uso do Power-up-timer, temporizador utilizado para inicialização do PIC.  
+....................   
+.................... #use delay(clock=4000000)        //Define a frequência de clock.  
+0004:  MOVLW  23
+0005:  MOVWF  04
+0006:  MOVF   00,W
+0007:  BTFSC  03.2
+0008:  GOTO   018
+0009:  MOVLW  01
+000A:  MOVWF  78
+000B:  CLRF   77
+000C:  DECFSZ 77,F
+000D:  GOTO   00C
+000E:  DECFSZ 78,F
+000F:  GOTO   00B
+0010:  MOVLW  4A
+0011:  MOVWF  77
+0012:  DECFSZ 77,F
+0013:  GOTO   012
+0014:  NOP
+0015:  NOP
+0016:  DECFSZ 00,F
+0017:  GOTO   009
+0018:  RETLW  00
+....................   
+.................... /* Estas diretivas definem que o controle E/S das portas será definido pelo programador */  
+.................... #use fast_io(a)  
+.................... #use fast_io(b)  
+.................... #use fast_io(c)  
+.................... #use fast_io(d)  
+.................... #use fast_io(e)  
+....................   
+.................... /* Definição de ponteiros para as portas */  
+.................... /* Esta definição é utilizada pois a biblioteca 16F877A.h não associa o rótulo portX com o endereço da referida porta */  
+.................... /* É uma preferência minha de uso, não obrigatória, pode ser utilizada a referência a pinos das portas conforme 16F877A.h */  
+....................   
+.................... #byte porta = 5  
+.................... #byte portb = 6  
+.................... #byte portc = 7  
+.................... #byte portd = 8  
+.................... #byte porte = 9  
+.................... #byte status = 3  
+.................... main()  
+.................... {  
+0019:  CLRF   04
+001A:  MOVLW  1F
+001B:  ANDWF  03,F
+001C:  BSF    03.5
+001D:  BSF    1F.0
+001E:  BSF    1F.1
+001F:  BSF    1F.2
+0020:  BCF    1F.3
+0021:  MOVLW  07
+0022:  BCF    03.5
+0023:  MOVWF  1F
+....................   
+....................    // Configuração de vias das portas do PIC como saída ou como entrada.  
+....................    // Se o bit 0 do registrador especial TRISA é 0, a via 0 da portA do PIC é saída, caso contrário é entrada.  
+....................    // Assim são configuradas todas as vias das portas do PIC, de qualquer porta.  
+....................    // Exemplo: TRISA = | 0 | 1 | 0 | 1 | 0 | 1 | -> PORTA = | S | E | S | E | S | E | , no 16F877A a portA tem 6 vias.  
+....................    int work;  
+....................    int dir;  
+....................    set_tris_a(0x00); // Define que todas as vias da portA do PIC serão saídas.  
+0024:  MOVLW  00
+0025:  BSF    03.5
+0026:  MOVWF  05
+....................    set_tris_d(0x00); // Define que todas as vias da portD do PIC serão saídas.  
+0027:  MOVWF  08
+....................    set_tris_b(0xF0);  
+0028:  MOVLW  F0
+0029:  MOVWF  06
+....................    bit_set(porta,4); // Ativa os leds, saturando o transistor chave no catodo comum dos leds. Vide página 13 do manual.  
+002A:  BCF    03.5
+002B:  BSF    05.4
+....................    port_b_pullups(TRUE);  
+002C:  BSF    03.5
+002D:  BCF    01.7
+....................    bit_clear(portb,1);  
+002E:  BCF    03.5
+002F:  BCF    06.1
+....................    portd = (0xFF); // Define todos os leds acesos inicialmente, valor inicial da contagem FF (zero).  
+0030:  MOVLW  FF
+0031:  MOVWF  08
+....................    work = (0xFF);  
+0032:  MOVWF  21
+....................    dir = 1;  
+0033:  MOVLW  01
+0034:  MOVWF  22
+....................    while (1)  
+....................    {  
+....................       if (!bit_test(portb,5))  
+0035:  BTFSC  06.5
+0036:  GOTO   048
+....................       {  
+....................          delay_ms(70);  
+0037:  MOVLW  46
+0038:  MOVWF  23
+0039:  CALL   004
+....................          if (!bit_test(portb,5))  
+003A:  BTFSC  06.5
+003B:  GOTO   043
+....................             if (dir==0) dir=1;  
+003C:  MOVF   22,F
+003D:  BTFSS  03.2
+003E:  GOTO   042
+003F:  MOVLW  01
+0040:  MOVWF  22
+....................          else dir=0;  
+0041:  GOTO   043
+0042:  CLRF   22
+....................          do  
+....................          {  
+....................             delay_ms(100);  
+0043:  MOVLW  64
+0044:  MOVWF  23
+0045:  CALL   004
+....................          }while(!bit_test(portb,5));  
+0046:  BTFSS  06.5
+0047:  GOTO   043
+....................       }  
+....................   
+....................   
+....................       if(dir!=0)  
+0048:  MOVF   22,F
+0049:  BTFSC  03.2
+004A:  GOTO   05D
+....................       {  
+....................          if(portd>0x01)  
+004B:  MOVF   08,W
+004C:  SUBLW  01
+004D:  BTFSC  03.0
+004E:  GOTO   057
+....................          {  
+....................             rotate_right(&work,2);  
+004F:  RRF    21,W
+0050:  RRF    22,F
+0051:  RRF    21,F
+....................             bit_clear (work,7);  
+0052:  BCF    21.7
+....................             delay_ms(100);  
+0053:  MOVLW  64
+0054:  MOVWF  23
+0055:  CALL   004
+....................          }  
+....................          else  
+0056:  GOTO   05B
+....................          {  
+....................             work = 0;  
+0057:  CLRF   21
+....................             delay_ms(100);  
+0058:  MOVLW  64
+0059:  MOVWF  23
+005A:  CALL   004
+....................          }  
+....................          portd = work;  
+005B:  MOVF   21,W
+005C:  MOVWF  08
+....................       }  
+....................          if(dir==0 && work<0xFF)  
+005D:  MOVF   22,F
+005E:  BTFSS  03.2
+005F:  GOTO   06D
+0060:  INCFSZ 21,W
+0061:  GOTO   063
+0062:  GOTO   06D
+....................       {  
+....................          rotate_left(&work,2);  
+0063:  RLF    22,W
+0064:  RLF    21,F
+0065:  RLF    22,F
+....................          work=work+1;  
+0066:  MOVLW  01
+0067:  ADDWF  21,F
+....................          portd = work;  
+0068:  MOVF   21,W
+0069:  MOVWF  08
+....................          delay_ms(100);  
+006A:  MOVLW  64
+006B:  MOVWF  23
+006C:  CALL   004
+....................       }  
+....................    }  
+006D:  GOTO   035
+.................... }  
+....................   
+....................   
+....................  
+006E:  SLEEP
+
+Configuration Fuses:
+   Word  1: 3FF1   XT NOWDT PUT NODEBUG NOPROTECT BROWNOUT LVP NOCPD NOWRT

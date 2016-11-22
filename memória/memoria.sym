@@ -1,0 +1,85 @@
+004-005 @READ_PROGRAM_MEMORY8.P1
+004     @WRITE_PROGRAM_MEMORY8.P2
+005     porta
+006     portb
+007     portc
+008     PSP_DATA
+008     portd
+009     porte
+015     CCP_1_LOW
+015     CCP_1
+016     CCP_1_HIGH
+01B     CCP_2
+01B     CCP_2_LOW
+01C     CCP_2_HIGH
+020     @TRIS_C
+021     MAIN.data1
+022     MAIN.data2
+023-024 read_ext_eeprom.address
+023-024 write_ext_eeprom.address
+023     MAIN.@SCRATCH1
+024     @delay_ms1.P1
+025     write_ext_eeprom.data
+025     read_ext_eeprom.data
+026     @I2C_READ_1.P1
+026.0   write_ext_eeprom.status
+026     read_ext_eeprom.@SCRATCH1
+027     @I2C_READ_1.@SCRATCH1
+027     write_ext_eeprom.@SCRATCH1
+027     read_ext_eeprom.@SCRATCH2
+028     @I2C_READ_1.@SCRATCH2
+028     write_ext_eeprom.@SCRATCH2
+029     @I2C_WRITE_1.P1
+077     @SCRATCH
+078     @SCRATCH
+078     _RETURN_
+079     @SCRATCH
+07A     @SCRATCH
+094     SSPSTAT
+10D-10E @READ_PROGRAM_MEMORY8.P1
+10D-10E @WRITE_PROGRAM_MEMORY8.P2
+
+ROM Allocation:
+013E  @I2C_READ_1
+0011  @I2C_WRITE_1
+0004  init_ext_eeprom
+005B  write_ext_eeprom
+00F8  read_ext_eeprom
+00E1  @delay_ms1
+019F  MAIN
+019F  @cinit
+
+
+User Memory space: 
+
+User Memory space: 
+
+Project Directory:
+    C:\Users\Paulo\Documents\Programação\PIC\memória\
+
+Project Files:
+    memoria.c
+    ..\..\..\..\..\..\Program Files (x86)\PICC\devices\16F877.h
+    i2c.c
+
+Units:
+    C:\Users\Paulo\Documents\Programação\PIC\memória\memoria (main)
+
+Compiler Settings:
+    Processor:      PIC16F877
+    Pointer Size:   16
+    ADC Range:      0-255
+    Opt Level:      9
+    Short,Int,Long: UNSIGNED: 1,8,16
+    Float,Double:   32,32
+
+Output Files:
+    Errors:      memoria.err
+    Ext Symbols: memoria.esym
+    INHX8:       memoria.hex
+    Symbols:     memoria.sym
+    List:        memoria.lst
+    Debug/COFF:  memoria.cof
+    Project:     memoria.PJT
+    Call Tree:   memoria.tre
+    Statistics:  memoria.sta

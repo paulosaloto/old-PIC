@@ -1,0 +1,37 @@
+[PROJECT]
+Target=pwm.HEX
+Development_Mode=2
+Processor=0x877A
+ToolSuite=CCS
+Processor_Text=PIC16F877A
+
+[Directories]
+Include=
+Library=
+LinkerScript=
+
+[Target Data]
+FileList=pwm.c;
+BuildTool=C-COMPILER
+OptionString=+FM
+AdditionalOptionString=
+BuildRequired=1
+
+[pwm.c]
+Type=4
+Path=
+FileList=
+BuildTool=
+OptionString=
+AdditionalOptionString=
+
+[mru-list]
+1=C:\Users\Paulo\DOCUME~1\SISTEM~1\PWMCOM~1\pwm.c
+
+[Windows]
+0=0000 C:\Users\Paulo\DOCUME~1\SISTEM~1\PWMCOM~1\pwm.c 0 0 796 451 3 0
+
+[Opened Files]
+1=pwm.c
+2=
+3=

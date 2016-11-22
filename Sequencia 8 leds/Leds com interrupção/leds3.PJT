@@ -1,0 +1,37 @@
+[PROJECT]
+Target=leds3.HEX
+Development_Mode=2
+Processor=0x877A
+ToolSuite=CCS
+
+[Directories]
+Include=
+Library=
+LinkerScript=
+
+[Target Data]
+FileList=leds3.c;
+BuildTool=C-COMPILER
+OptionString=+FM
+AdditionalOptionString=
+BuildRequired=1
+
+[leds3.c]
+Type=4
+Path=
+FileList=
+BuildTool=
+OptionString=
+AdditionalOptionString=
+
+[mru-list]
+1=C:\Users\Paulo\DOCUME~1\SISTEM~1\LEDSCO~2\leds3.c
+
+[Windows]
+0=0000 C:\Users\Paulo\DOCUME~1\SISTEM~1\LEDSCO~2\leds3.c 0 0 796 451 3 0
+
+[Opened Files]
+1=C:\Users\Paulo\Documents\Sistemas Digitais\Leds com interrupção\leds3.c
+2=
+3=C:\Users\Paulo\Documents\Sistemas Digitais\teste\interrru.c
+4=

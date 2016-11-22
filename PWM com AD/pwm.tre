@@ -1,0 +1,10 @@
+읕pwm
+   읕main  0/192  Ram=14
+      쳐??0??
+      쳐@delay_ms1  0/21  Ram=1
+      쳐@delay_ms1  0/21  Ram=1
+      쳐@MUL1616  0/21  Ram=5
+      쳐@DIV1616  0/37  Ram=5
+      쳐@DIV1616  0/37  Ram=5
+      쳐@MUL1616  0/21  Ram=5
+      읕@DIV1616  0/37  Ram=5

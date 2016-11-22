@@ -1,0 +1,179 @@
+CCS PCM C Compiler, Version 3.207, 16465               15-fev-12 11:38
+
+               Filename: C:\Users\Paulo\Documents\Sistemas Digitais\Leds simples\leds.LST
+
+               ROM used: 92 words (1%)
+                         Largest free fragment is 2048
+               RAM used: 5 (3%) at main() level
+                         6 (3%) worst case
+               Stack:    1 locations
+
+*
+0000:  MOVLW  00
+0001:  MOVWF  0A
+0002:  GOTO   019
+0003:  NOP
+....................  // Este programa realiza a contagem de 0 a 255 nos leds do Kit SD-1700.  
+....................   
+.................... #include <16F877a.h>             //Inclue a biblioteca 16F877a.h, disponível em 
+....................  //////// Standard Header file for the PIC16F877A device ////////////////  
+.................... #device PIC16F877A  
+.................... #list  
+....................  
+....................                                  // c:\Arquivos de programas\PICC\Devices  
+....................   
+.................... #fuses XT,NOWDT,NOPROTECT,PUT    //Define para o compilador: a faixa de frequência do clock (pode ser LS, XT, HS),  
+....................                                  //não uso do watchdog timer,  
+....................                                  //não uso de proteção de código,  
+....................                                  //uso do Power-up-timer, temporizador utilizado para inicialização do PIC.  
+....................   
+.................... #use delay(clock=4000000)        //Define a frequência de clock.  
+0004:  MOVLW  21
+0005:  MOVWF  04
+0006:  MOVF   00,W
+0007:  BTFSC  03.2
+0008:  GOTO   018
+0009:  MOVLW  01
+000A:  MOVWF  78
+000B:  CLRF   77
+000C:  DECFSZ 77,F
+000D:  GOTO   00C
+000E:  DECFSZ 78,F
+000F:  GOTO   00B
+0010:  MOVLW  4A
+0011:  MOVWF  77
+0012:  DECFSZ 77,F
+0013:  GOTO   012
+0014:  NOP
+0015:  NOP
+0016:  DECFSZ 00,F
+0017:  GOTO   009
+0018:  RETLW  00
+....................   
+.................... /* Estas diretivas definem que o controle E/S das portas será definido pelo programador */  
+.................... #use fast_io(a)  
+.................... #use fast_io(b)  
+.................... #use fast_io(c)  
+.................... #use fast_io(d)  
+.................... #use fast_io(e)  
+....................   
+.................... /* Definição de ponteiros para as portas */  
+.................... /* Esta definição é utilizada pois a biblioteca 16F877A.h não associa o rótulo portX com o endereço da referida porta */  
+.................... /* É uma preferência minha de uso, não obrigatória, pode ser utilizada a referência a pinos das portas conforme 16F877A.h */  
+....................   
+.................... #byte porta = 5  
+.................... #byte portb = 6  
+.................... #byte portc = 7  
+.................... #byte portd = 8  
+.................... #byte porte = 9  
+....................   
+.................... main()  
+.................... {  
+0019:  CLRF   04
+001A:  MOVLW  1F
+001B:  ANDWF  03,F
+001C:  BSF    03.5
+001D:  BSF    1F.0
+001E:  BSF    1F.1
+001F:  BSF    1F.2
+0020:  BCF    1F.3
+0021:  MOVLW  07
+0022:  BCF    03.5
+0023:  MOVWF  1F
+....................   
+....................    // Configuração de vias das portas do PIC como saída ou como entrada.  
+....................    // Se o bit 0 do registrador especial TRISA é 0, a via 0 da portA do PIC é saída, caso contrário é entrada.  
+....................    // Assim são configuradas todas as vias das portas do PIC, de qualquer porta.  
+....................    // Exemplo: TRISA = | 0 | 1 | 0 | 1 | 0 | 1 | -> PORTA = | S | E | S | E | S | E | , no 16F877A a portA tem 6 vias.  
+....................   
+....................    set_tris_a(0x00); // Define que todas as vias da portA do PIC serão saídas.  
+0024:  MOVLW  00
+0025:  BSF    03.5
+0026:  MOVWF  05
+....................    set_tris_d(0x00); // Define que todas as vias da portD do PIC serão saídas.  
+0027:  MOVWF  08
+....................    set_tris_b(0xF0);  
+0028:  MOVLW  F0
+0029:  MOVWF  06
+....................    bit_set(porta,4); // Ativa os leds, saturando o transistor chave no catodo comum dos leds. Vide página 13 do manual.  
+002A:  BCF    03.5
+002B:  BSF    05.4
+....................   
+....................    portd = 0xFF; // Define todos os leds acesos inicialmente, valor inicial da contagem FF (zero).  
+002C:  MOVLW  FF
+002D:  MOVWF  08
+....................   
+....................    while (1){  
+....................       	delay_ms(100);   // Define um delay de 1 segundo = 1000 ms. Para delays em microsegundos use delay_us(XXX).  
+002E:  MOVLW  64
+002F:  MOVWF  21
+0030:  CALL   004
+....................          portd = 0x7F;  
+0031:  MOVLW  7F
+0032:  MOVWF  08
+....................          delay_ms(100);   // Define um delay de 1 segundo = 1000 ms. Para delays em microsegundos use delay_us(XXX).  
+0033:  MOVLW  64
+0034:  MOVWF  21
+0035:  CALL   004
+....................          portd = 0x3F;  
+0036:  MOVLW  3F
+0037:  MOVWF  08
+....................          delay_ms(100);   // Define um delay de 1 segundo = 1000 ms. Para delays em microsegundos use delay_us(XXX).  
+0038:  MOVLW  64
+0039:  MOVWF  21
+003A:  CALL   004
+....................          portd = 0x1F;  
+003B:  MOVLW  1F
+003C:  MOVWF  08
+....................          delay_ms(100);   // Define um delay de 1 segundo = 1000 ms. Para delays em microsegundos use delay_us(XXX).  
+003D:  MOVLW  64
+003E:  MOVWF  21
+003F:  CALL   004
+....................          portd = 0x0F;  
+0040:  MOVLW  0F
+0041:  MOVWF  08
+....................          delay_ms(100);   // Define um delay de 1 segundo = 1000 ms. Para delays em microsegundos use delay_us(XXX).  
+0042:  MOVLW  64
+0043:  MOVWF  21
+0044:  CALL   004
+....................          portd = 0x07;  
+0045:  MOVLW  07
+0046:  MOVWF  08
+....................          delay_ms(100);   // Define um delay de 1 segundo = 1000 ms. Para delays em microsegundos use delay_us(XXX).  
+0047:  MOVLW  64
+0048:  MOVWF  21
+0049:  CALL   004
+....................          portd = 0x03;  
+004A:  MOVLW  03
+004B:  MOVWF  08
+....................          delay_ms(100);   // Define um delay de 1 segundo = 1000 ms. Para delays em microsegundos use delay_us(XXX).  
+004C:  MOVLW  64
+004D:  MOVWF  21
+004E:  CALL   004
+....................          portd = 0x01;  
+004F:  MOVLW  01
+0050:  MOVWF  08
+....................          delay_ms(100);   // Define um delay de 1 segundo = 1000 ms. Para delays em microsegundos use delay_us(XXX).  
+0051:  MOVLW  64
+0052:  MOVWF  21
+0053:  CALL   004
+....................          portd = 0x00;  
+0054:  CLRF   08
+....................          delay_ms(100);   // Define um delay de 1 segundo = 1000 ms. Para delays em microsegundos use delay_us(XXX).  
+0055:  MOVLW  64
+0056:  MOVWF  21
+0057:  CALL   004
+....................          portd = 0xFF;         
+0058:  MOVLW  FF
+0059:  MOVWF  08
+....................    
+....................    	}  
+005A:  GOTO   02E
+.................... }  
+....................   
+....................   
+....................  
+005B:  SLEEP
+
+Configuration Fuses:
+   Word  1: 3FF1   XT NOWDT PUT NODEBUG NOPROTECT BROWNOUT LVP NOCPD NOWRT

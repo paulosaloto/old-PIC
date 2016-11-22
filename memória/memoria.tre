@@ -1,0 +1,18 @@
+ÀÄmemoria
+   ÀÄMAIN  0/58  Ram=1
+      ÃÄ??0??
+      ÃÄinit_ext_eeprom  0/13  Ram=0
+      ÃÄwrite_ext_eeprom  0/134  Ram=6
+      ³  ÃÄ@I2C_WRITE_1  0/74  Ram=1
+      ³  ÃÄ@I2C_WRITE_1  0/74  Ram=1
+      ³  ÃÄ@I2C_WRITE_1  0/74  Ram=1
+      ³  ÃÄ@I2C_WRITE_1  0/74  Ram=1
+      ³  ÃÄ@I2C_WRITE_1  0/74  Ram=1
+      ³  ÀÄ@I2C_WRITE_1  0/74  Ram=1
+      ÃÄ@delay_ms1  0/23  Ram=1
+      ÀÄread_ext_eeprom  0/167  Ram=5
+         ÃÄ@I2C_WRITE_1  0/74  Ram=1
+         ÃÄ@I2C_WRITE_1  0/74  Ram=1
+         ÃÄ@I2C_WRITE_1  0/74  Ram=1
+         ÃÄ@I2C_WRITE_1  0/74  Ram=1
+         ÀÄ@I2C_READ_1  (Inline)  Ram=3

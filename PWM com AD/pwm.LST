@@ -1,0 +1,305 @@
+CCS PCM C Compiler, Version 4.114, 93460303               26-mar-12 22:18
+
+               Filename: C:\Users\Paulo\Documents\Sistemas Digitais\PWM com AD\pwm.lst
+
+               ROM used: 275 words (3%)
+                         Largest free fragment is 2048
+               RAM used: 20 (5%) at main() level
+                         25 (7%) worst case
+               Stack:    1 locations
+
+*
+0000:  MOVLW  00
+0001:  MOVWF  0A
+0002:  GOTO   053
+0003:  NOP
+.................... //programa CONVERSOR A/D 
+....................  
+....................  
+....................  
+.................... #include   <16f877a.h> 
+.................... //////// Standard Header file for the PIC16F877A device //////////////// 
+.................... #device PIC16F877A 
+.................... #list 
+....................  
+.................... #DEVICE ADC=8 
+....................  
+.................... #fuses   XT, NOWDT, NOPROTECT,PUT                                                     //condições de compilação relativas ao hardware 
+.................... #use delay   (clock=4000000) 
+*
+0004:  MOVLW  2F
+0005:  MOVWF  04
+0006:  BCF    03.7
+0007:  MOVF   00,W
+0008:  BTFSC  03.2
+0009:  GOTO   018
+000A:  MOVLW  01
+000B:  MOVWF  78
+000C:  CLRF   77
+000D:  DECFSZ 77,F
+000E:  GOTO   00D
+000F:  DECFSZ 78,F
+0010:  GOTO   00C
+0011:  MOVLW  4A
+0012:  MOVWF  77
+0013:  DECFSZ 77,F
+0014:  GOTO   013
+0015:  GOTO   016
+0016:  DECFSZ 00,F
+0017:  GOTO   00A
+0018:  RETURN
+....................                                                                                       //(em relação ao osc; ao watchdog; ao travar o codigo) 
+.................... #byte porta=5 
+.................... #byte portb=6 
+.................... #byte portc=7 
+.................... #byte portd=8 
+....................                                                                                       //para o pic identificar a porta (portb=6 e porta=5) 
+....................  
+....................  
+.................... int main () 
+.................... { 
+*
+0053:  CLRF   04
+0054:  BCF    03.7
+0055:  MOVLW  1F
+0056:  ANDWF  03,F
+0057:  MOVLW  FF
+0058:  MOVWF  20
+0059:  BSF    03.5
+005A:  BSF    1F.0
+005B:  BSF    1F.1
+005C:  BSF    1F.2
+005D:  BCF    1F.3
+005E:  MOVLW  07
+005F:  MOVWF  1C
+....................  
+....................    //tabela para mostrar a letra no display 
+....................    byte tabela[10] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x67}; 
+0060:  MOVLW  3F
+0061:  BCF    03.5
+0062:  MOVWF  21
+0063:  MOVLW  06
+0064:  MOVWF  22
+0065:  MOVLW  5B
+0066:  MOVWF  23
+0067:  MOVLW  4F
+0068:  MOVWF  24
+0069:  MOVLW  66
+006A:  MOVWF  25
+006B:  MOVLW  6D
+006C:  MOVWF  26
+006D:  MOVLW  7D
+006E:  MOVWF  27
+006F:  MOVLW  07
+0070:  MOVWF  28
+0071:  MOVLW  7F
+0072:  MOVWF  29
+0073:  MOVLW  67
+0074:  MOVWF  2A
+....................  
+....................  
+....................    long value, display; 
+....................    set_tris_a (0x1f); 
+0075:  MOVLW  1F
+0076:  BSF    03.5
+0077:  MOVWF  05
+....................    set_tris_d (0x00); 
+0078:  MOVLW  00
+0079:  MOVWF  08
+....................    set_tris_c (0x00); 
+007A:  MOVWF  07
+007B:  BCF    03.5
+007C:  MOVWF  20
+....................     
+....................    setup_ccp1 (CCP_PWM); 
+007D:  BCF    20.2
+007E:  MOVF   20,W
+007F:  BSF    03.5
+0080:  MOVWF  07
+0081:  BCF    03.5
+0082:  BCF    07.2
+0083:  MOVLW  0C
+0084:  MOVWF  17
+....................    setup_timer_2(T2_DIV_BY_1,63,1); 
+0085:  MOVLW  00
+0086:  MOVWF  78
+0087:  IORLW  04
+0088:  MOVWF  12
+0089:  MOVLW  3F
+008A:  BSF    03.5
+008B:  MOVWF  12
+....................  
+....................  
+....................    setup_adc_ports(ALL_ANALOG); 
+008C:  BCF    1F.0
+008D:  BCF    1F.1
+008E:  BCF    1F.2
+008F:  BCF    1F.3
+....................    setup_adc(ADC_CLOCK_DIV_8); 
+0090:  BCF    1F.6
+0091:  BCF    03.5
+0092:  BSF    1F.6
+0093:  BCF    1F.7
+0094:  BSF    03.5
+0095:  BCF    1F.7
+0096:  BCF    03.5
+0097:  BSF    1F.0
+....................    set_adc_channel(0); 
+0098:  MOVLW  00
+0099:  MOVWF  78
+009A:  MOVF   1F,W
+009B:  ANDLW  C7
+009C:  IORWF  78,W
+009D:  MOVWF  1F
+....................    delay_ms(10); 
+009E:  MOVLW  0A
+009F:  MOVWF  2F
+00A0:  CALL   004
+....................     
+....................    while (1) 
+....................    { 
+....................       value=(read_adc()); 
+00A1:  BSF    1F.2
+00A2:  BTFSC  1F.2
+00A3:  GOTO   0A2
+00A4:  MOVF   1E,W
+00A5:  CLRF   2C
+00A6:  MOVWF  2B
+....................       set_pwm1_duty (value); 
+00A7:  MOVF   2C,W
+00A8:  MOVWF  79
+00A9:  MOVF   2B,W
+00AA:  MOVWF  78
+00AB:  RRF    79,F
+00AC:  RRF    78,F
+00AD:  RRF    79,F
+00AE:  RRF    78,F
+00AF:  RRF    79,F
+00B0:  MOVF   78,W
+00B1:  MOVWF  15
+00B2:  RRF    79,F
+00B3:  RRF    79,W
+00B4:  ANDLW  30
+00B5:  MOVWF  77
+00B6:  MOVF   17,W
+00B7:  ANDLW  CF
+00B8:  IORWF  77,W
+00B9:  MOVWF  17
+....................       delay_ms(10); 
+00BA:  MOVLW  0A
+00BB:  MOVWF  2F
+00BC:  CALL   004
+....................       value=value*5; 
+00BD:  MOVF   2C,W
+00BE:  MOVWF  30
+00BF:  MOVF   2B,W
+00C0:  MOVWF  2F
+00C1:  CLRF   32
+00C2:  MOVLW  05
+00C3:  MOVWF  31
+00C4:  CALL   019
+00C5:  MOVF   79,W
+00C6:  MOVWF  2C
+00C7:  MOVF   78,W
+00C8:  MOVWF  2B
+....................       if (bit_test(portc,0)) 
+00C9:  BTFSS  07.0
+00CA:  GOTO   0E3
+....................       { 
+....................          display=(value/255); 
+00CB:  MOVF   2C,W
+00CC:  MOVWF  30
+00CD:  MOVF   2B,W
+00CE:  MOVWF  2F
+00CF:  CLRF   32
+00D0:  MOVLW  FF
+00D1:  MOVWF  31
+00D2:  CALL   02E
+00D3:  MOVF   79,W
+00D4:  MOVWF  2E
+00D5:  MOVF   78,W
+00D6:  MOVWF  2D
+....................  
+....................          bit_set(portc,1); 
+00D7:  BSF    07.1
+....................          bit_clear(portc,0); 
+00D8:  BCF    07.0
+....................          portd=tabela[display]; 
+00D9:  MOVLW  21
+00DA:  ADDWF  2D,W
+00DB:  MOVWF  04
+00DC:  BCF    03.7
+00DD:  BTFSC  2E.0
+00DE:  BSF    03.7
+00DF:  MOVF   00,W
+00E0:  MOVWF  08
+....................          bit_set(portd,7); 
+00E1:  BSF    08.7
+....................       } 
+....................       else 
+00E2:  GOTO   111
+....................       { 
+....................          value=value%255; 
+00E3:  MOVF   2C,W
+00E4:  MOVWF  30
+00E5:  MOVF   2B,W
+00E6:  MOVWF  2F
+00E7:  CLRF   32
+00E8:  MOVLW  FF
+00E9:  MOVWF  31
+00EA:  CALL   02E
+00EB:  MOVF   77,W
+00EC:  MOVWF  2B
+00ED:  MOVF   7A,W
+00EE:  MOVWF  2C
+....................          value=value*10; 
+00EF:  MOVF   2C,W
+00F0:  MOVWF  30
+00F1:  MOVF   2B,W
+00F2:  MOVWF  2F
+00F3:  CLRF   32
+00F4:  MOVLW  0A
+00F5:  MOVWF  31
+00F6:  CALL   019
+00F7:  MOVF   79,W
+00F8:  MOVWF  2C
+00F9:  MOVF   78,W
+00FA:  MOVWF  2B
+....................          display=(value/255); 
+00FB:  MOVF   2C,W
+00FC:  MOVWF  30
+00FD:  MOVF   2B,W
+00FE:  MOVWF  2F
+00FF:  CLRF   32
+0100:  MOVLW  FF
+0101:  MOVWF  31
+0102:  CALL   02E
+0103:  MOVF   79,W
+0104:  MOVWF  2E
+0105:  MOVF   78,W
+0106:  MOVWF  2D
+....................          bit_set(portc,0); 
+0107:  BSF    07.0
+....................          bit_clear(portc,1); 
+0108:  BCF    07.1
+....................          portd=tabela[display]; 
+0109:  MOVLW  21
+010A:  ADDWF  2D,W
+010B:  MOVWF  04
+010C:  BCF    03.7
+010D:  BTFSC  2E.0
+010E:  BSF    03.7
+010F:  MOVF   00,W
+0110:  MOVWF  08
+....................       } 
+....................        
+....................  
+....................    } 
+0111:  GOTO   0A1
+....................  
+....................  
+.................... } 
+0112:  SLEEP
+
+Configuration Fuses:
+   Word  1: 3F71   XT NOWDT PUT BROWNOUT NOLVP NOCPD NOWRT NODEBUG NOPROTECT

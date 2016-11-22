@@ -1,0 +1,497 @@
+CCS PCM C Compiler, Version 3.207, 16465               17-dez-10 20:26
+
+               Filename: C:\Documents and Settings\Paulo\Desktop\08\ex8.LST
+
+               ROM used: 376 words (37%)
+                         Largest free fragment is 648
+               RAM used: 17 (25%) at main() level
+                         20 (29%) worst case
+               Stack:    2 locations
+
+*
+0000:  MOVLW  00
+0001:  MOVWF  0A
+0002:  GOTO   09D
+0003:  NOP
+....................  //                   programa teclado  
+.................... #include    <16f84.h>                              //biblioteca do pic 
+....................  //////// Standard Header file for the PIC16F84 device ////////////////  
+.................... #device PIC16F84  
+.................... #list  
+....................  
+.................... #fuses      XT, NOWDT, NOPROTECT                    //condições de compilação relativas ao hardware (em relação ao osc; ao watchdog; ao travar o codigo)  
+.................... #use        delay   (clock=4000000)  
+0088:  MOVLW  1C
+0089:  MOVWF  04
+008A:  MOVF   00,W
+008B:  BTFSC  03.2
+008C:  GOTO   09C
+008D:  MOVLW  01
+008E:  MOVWF  0D
+008F:  CLRF   0C
+0090:  DECFSZ 0C,F
+0091:  GOTO   090
+0092:  DECFSZ 0D,F
+0093:  GOTO   08F
+0094:  MOVLW  4A
+0095:  MOVWF  0C
+0096:  DECFSZ 0C,F
+0097:  GOTO   096
+0098:  NOP
+0099:  NOP
+009A:  DECFSZ 00,F
+009B:  GOTO   08D
+009C:  RETLW  00
+.................... #byte       porta=5  
+.................... #byte       portb=6  
+....................   
+....................   
+....................   
+.................... int varredura(int*num2)                   //subrotina de varredura das teclas; retorna o valor da tecla em hexa  
+....................  {  
+....................       int i, j;  
+....................   
+....................       while(1){                                        //fará o controle das linhas e testará as colunas.  
+....................          for (i=0; i<=3; i++) {                       //o valor da linha a ser zerada será definido pelo i  
+*
+0029:  CLRF   1C
+002A:  MOVF   1C,W
+002B:  SUBLW  03
+002C:  BTFSS  03.0
+002D:  GOTO   07E
+....................             switch (i){                               //e transporta o valor para portb  
+002E:  MOVF   1C,W
+002F:  ADDLW  FC
+0030:  BTFSC  03.0
+0031:  GOTO   040
+0032:  ADDLW  04
+0033:  GOTO   080
+....................                case (0):  
+....................                portb=0x7e;                            //eu faria apenas uma função direta tipo portb=0x7f-pow(2,i)  
+0034:  MOVLW  7E
+0035:  MOVWF  06
+....................                break;                                 //usando a <math.h>, mas tava dando uma zica tremenda.  
+0036:  GOTO   040
+....................                case (1):  
+....................                portb=0x7d;  
+0037:  MOVLW  7D
+0038:  MOVWF  06
+....................                break;  
+0039:  GOTO   040
+....................                case (2):  
+....................                portb=0x7b;  
+003A:  MOVLW  7B
+003B:  MOVWF  06
+....................                break;  
+003C:  GOTO   040
+....................                case (3):  
+....................                portb=0x77;  
+003D:  MOVLW  77
+003E:  MOVWF  06
+....................                break;  
+003F:  GOTO   040
+....................             }  
+....................                if (!bit_test(portb,4)) {  
+0040:  BTFSC  06.4
+0041:  GOTO   051
+....................                   *num2=(3*i)+1;                     //caso seja apertado um botão da primeira coluna, temos que o numero pode ser   
+0042:  MOVF   1B,W
+0043:  MOVWF  04
+0044:  MOVLW  03
+0045:  MOVWF  1F
+0046:  MOVF   1C,W
+0047:  MOVWF  20
+0048:  CALL   004
+0049:  MOVLW  01
+004A:  ADDWF  0D,W
+004B:  MOVWF  00
+....................                   portb=0x7f;                        //1, 4, 7 ou *. ou seja, 3*i+1   
+004C:  MOVLW  7F
+004D:  MOVWF  06
+....................                   return(0);  
+004E:  MOVLW  00
+004F:  MOVWF  0D
+0050:  GOTO   07F
+....................                }  
+....................                if (!bit_test(portb,5)) {              //o mesmo para as outras colunas, com +2 e +3  
+0051:  BTFSC  06.5
+0052:  GOTO   06B
+....................                   *num2=(3*i)+2;  
+0053:  MOVF   1B,W
+0054:  MOVWF  04
+0055:  MOVLW  03
+0056:  MOVWF  1F
+0057:  MOVF   1C,W
+0058:  MOVWF  20
+0059:  CALL   004
+005A:  MOVLW  02
+005B:  ADDWF  0D,W
+005C:  MOVWF  00
+....................                   if (*num2==0x0b)*num2=0;  
+005D:  MOVF   1B,W
+005E:  MOVWF  04
+005F:  MOVF   00,W
+0060:  SUBLW  0B
+0061:  BTFSS  03.2
+0062:  GOTO   066
+0063:  MOVF   1B,W
+0064:  MOVWF  04
+0065:  CLRF   00
+....................                   portb=0x7f;  
+0066:  MOVLW  7F
+0067:  MOVWF  06
+....................                   return(0);  
+0068:  MOVLW  00
+0069:  MOVWF  0D
+006A:  GOTO   07F
+....................                }  
+....................                if (!bit_test(portb,6)){  
+006B:  BTFSC  06.6
+006C:  GOTO   07C
+....................                   *num2=(3*i)+3;  
+006D:  MOVF   1B,W
+006E:  MOVWF  04
+006F:  MOVLW  03
+0070:  MOVWF  1F
+0071:  MOVF   1C,W
+0072:  MOVWF  20
+0073:  CALL   004
+0074:  MOVLW  03
+0075:  ADDWF  0D,W
+0076:  MOVWF  00
+....................                   portb=0x7f;  
+0077:  MOVLW  7F
+0078:  MOVWF  06
+....................                   return(0);  
+0079:  MOVLW  00
+007A:  MOVWF  0D
+007B:  GOTO   07F
+....................                }  
+....................             }  
+007C:  INCF   1C,F
+007D:  GOTO   02A
+....................          }  
+007E:  GOTO   029
+....................  }  
+007F:  RETLW  00
+....................    void main ()  
+....................    {  
+*
+009D:  CLRF   04
+009E:  MOVLW  1F
+009F:  ANDWF  03,F
+....................   
+....................       int ok=0,a,tenta=0,numero=15,senha[4],senha2[4];  
+00A0:  CLRF   0F
+00A1:  CLRF   11
+00A2:  MOVLW  0F
+00A3:  MOVWF  12
+....................   
+....................   
+....................   
+....................       set_tris_b (0x70);                                  //define entradas e saídas  
+00A4:  MOVLW  70
+00A5:  TRIS   6
+....................       set_tris_a (0x00);                                 //B0 a B3-> out - B4 a B6-> in  
+00A6:  MOVLW  00
+00A7:  TRIS   5
+....................       port_b_pullups (true);                            //seta o pull up  
+00A8:  BSF    03.5
+00A9:  BCF    01.7
+....................       porta=0x0a;  
+00AA:  MOVLW  0A
+00AB:  BCF    03.5
+00AC:  MOVWF  05
+....................       portb=0x7f;  
+00AD:  MOVLW  7F
+00AE:  MOVWF  06
+....................   
+.................... //começa a rotina  
+....................          for (a=1; a<6; a++){  
+00AF:  MOVLW  01
+00B0:  MOVWF  10
+00B1:  MOVF   10,W
+00B2:  SUBLW  05
+00B3:  BTFSS  03.0
+00B4:  GOTO   103
+....................             varredura (&numero);                //primeiro será digitada a senha a ser gravada. quando qualquer  
+00B5:  MOVLW  12
+00B6:  MOVWF  1B
+00B7:  CALL   029
+....................             bit_set(portb,7);                   //tecla é apertada, o led pisca. isso é importante para saber  
+00B8:  BSF    06.7
+....................             delay_ms(30);                       //se a tecla realmente foi pressionada ao tentar digitar a senha  
+00B9:  MOVLW  1E
+00BA:  MOVWF  1C
+00BB:  CALL   088
+....................             bit_clear(portb,7);  
+00BC:  BCF    06.7
+....................             switch (numero){  
+00BD:  MOVF   12,W
+00BE:  XORLW  0A
+00BF:  BTFSC  03.2
+00C0:  GOTO   0C5
+00C1:  XORLW  06
+00C2:  BTFSC  03.2
+00C3:  GOTO   0D9
+00C4:  GOTO   0E9
+....................                case(0x0a):                      //caso a tecla corrige seja pressionada, o programa apaga o numero  
+....................                   if (a>2) porta=senha[a-3];    //que foi digitado anteriormente.  
+00C5:  MOVF   10,W
+00C6:  SUBLW  02
+00C7:  BTFSC  03.0
+00C8:  GOTO   0D0
+00C9:  MOVLW  03
+00CA:  SUBWF  10,W
+00CB:  ADDLW  13
+00CC:  MOVWF  04
+00CD:  MOVF   00,W
+00CE:  MOVWF  05
+....................                   else porta=0x0a;  
+00CF:  GOTO   0D2
+00D0:  MOVLW  0A
+00D1:  MOVWF  05
+....................                   a=a-2;                        //se essa tecla for a primeira a ser apertada, a senha é colocada   
+00D2:  MOVLW  02
+00D3:  SUBWF  10,F
+....................                   if (a>0xfd) a=0;              //na primeira posição.  
+00D4:  MOVF   10,W
+00D5:  SUBLW  FD
+00D6:  BTFSS  03.0
+00D7:  CLRF   10
+....................                   break;  
+00D8:  GOTO   0F8
+....................                case(0x0c):  
+....................                   if(a==5) porta=0x0c;             //coloca "C" no display, se certo ou "E" se errado.  
+00D9:  MOVF   10,W
+00DA:  SUBLW  05
+00DB:  BTFSS  03.2
+00DC:  GOTO   0E0
+00DD:  MOVLW  0C
+00DE:  MOVWF  05
+....................                   else {  
+00DF:  GOTO   0E3
+....................                      porta=0x0e;  
+00E0:  MOVLW  0E
+00E1:  MOVWF  05
+....................                      a=0;  
+00E2:  CLRF   10
+....................                   }                   //ao confirmar a senha com menos de 4 digitos, ele  
+....................            			   delay_ms(200);                 //informa erro e começa denovo  
+00E3:  MOVLW  C8
+00E4:  MOVWF  1C
+00E5:  CALL   088
+....................                      porta=0x0a;  
+00E6:  MOVLW  0A
+00E7:  MOVWF  05
+....................                   break;  
+00E8:  GOTO   0F8
+....................                default:  
+....................                   if(a!=5){  
+00E9:  MOVF   10,W
+00EA:  SUBLW  05
+00EB:  BTFSC  03.2
+00EC:  GOTO   0F6
+....................                      porta=numero;  
+00ED:  MOVF   12,W
+00EE:  MOVWF  05
+....................                      senha[a-1]=numero;  
+00EF:  MOVLW  01
+00F0:  SUBWF  10,W
+00F1:  ADDLW  13
+00F2:  MOVWF  04
+00F3:  MOVF   12,W
+00F4:  MOVWF  00
+....................                   }  
+....................                   else (a=a-1);  
+00F5:  GOTO   0F8
+00F6:  MOVLW  01
+00F7:  SUBWF  10,F
+....................             }  
+....................             portb=0x00;  
+00F8:  CLRF   06
+....................      		   while(portb!=0x70)  
+....................             delay_ms(10);  
+00F9:  MOVF   06,W
+00FA:  SUBLW  70
+00FB:  BTFSC  03.2
+00FC:  GOTO   101
+00FD:  MOVLW  0A
+00FE:  MOVWF  1C
+00FF:  CALL   088
+0100:  GOTO   0F9
+....................          }  
+0101:  INCF   10,F
+0102:  GOTO   0B1
+....................   
+....................          while(1)  
+....................                {  
+....................          for (a=1; a<6; a++){  
+0103:  MOVLW  01
+0104:  MOVWF  10
+0105:  MOVF   10,W
+0106:  SUBLW  05
+0107:  BTFSS  03.0
+0108:  GOTO   176
+....................             varredura (&numero);                //teste da senha  
+0109:  MOVLW  12
+010A:  MOVWF  1B
+010B:  CALL   029
+....................             bit_set(portb,7);                     
+010C:  BSF    06.7
+....................             delay_ms(30);  
+010D:  MOVLW  1E
+010E:  MOVWF  1C
+010F:  CALL   088
+....................             bit_clear(portb,7);                 //esta parte é parecida com a anterior. a diferença é que   
+0110:  BCF    06.7
+....................             switch (numero){                    //a senha digitada aqui é comparada com a senha gravada.  
+0111:  MOVF   12,W
+0112:  XORLW  0A
+0113:  BTFSC  03.2
+0114:  GOTO   119
+0115:  XORLW  06
+0116:  BTFSC  03.2
+0117:  GOTO   122
+0118:  GOTO   139
+....................                case(0x0a):  
+....................                   porta=0x0a;  
+0119:  MOVLW  0A
+011A:  MOVWF  05
+....................                   a=a-2;  
+011B:  MOVLW  02
+011C:  SUBWF  10,F
+....................                   if (a>0xfd) a=0;  
+011D:  MOVF   10,W
+011E:  SUBLW  FD
+011F:  BTFSS  03.0
+0120:  CLRF   10
+....................                   break;  
+0121:  GOTO   15B
+....................                   case(0x0c):  
+....................                      if(a==5 && ok>=3){  
+0122:  MOVF   10,W
+0123:  SUBLW  05
+0124:  BTFSS  03.2
+0125:  GOTO   12E
+0126:  MOVF   0F,W
+0127:  SUBLW  02
+0128:  BTFSC  03.0
+0129:  GOTO   12E
+....................                         porta=0x0c;  
+012A:  MOVLW  0C
+012B:  MOVWF  05
+....................                         tenta=0;  
+012C:  CLRF   11
+....................                      }  
+....................                      else{  
+012D:  GOTO   133
+....................                         porta=0x0e;  
+012E:  MOVLW  0E
+012F:  MOVWF  05
+....................                         tenta=tenta+1;  
+0130:  MOVLW  01
+0131:  ADDWF  11,F
+....................                         a=0;  
+0132:  CLRF   10
+....................                      }  
+....................                      delay_ms(200);  
+0133:  MOVLW  C8
+0134:  MOVWF  1C
+0135:  CALL   088
+....................                      ok=0;  
+0136:  CLRF   0F
+....................                      a=0;                                           //ao confirmar a senha com menos de 4 digitos, ele  
+0137:  CLRF   10
+....................                      break;  
+0138:  GOTO   15B
+....................                default:  
+....................                   if(a!=5){  
+0139:  MOVF   10,W
+013A:  SUBLW  05
+013B:  BTFSC  03.2
+013C:  GOTO   146
+....................                      porta=0x0a;  
+013D:  MOVLW  0A
+013E:  MOVWF  05
+....................                      senha2[a-1]=numero;  
+013F:  MOVLW  01
+0140:  SUBWF  10,W
+0141:  ADDLW  17
+0142:  MOVWF  04
+0143:  MOVF   12,W
+0144:  MOVWF  00
+....................                   }  
+....................                   else (a=a-1);  
+0145:  GOTO   148
+0146:  MOVLW  01
+0147:  SUBWF  10,F
+....................   
+....................                   if (senha2[a-1]==senha[a-1])ok=ok+1;         //nessa parte a senha é testada.  
+0148:  MOVLW  01
+0149:  SUBWF  10,W
+014A:  ADDLW  17
+014B:  MOVWF  04
+014C:  MOVF   00,W
+014D:  MOVWF  1C
+014E:  MOVLW  01
+014F:  SUBWF  10,W
+0150:  ADDLW  13
+0151:  MOVWF  04
+0152:  MOVF   00,W
+0153:  SUBWF  1C,W
+0154:  BTFSS  03.2
+0155:  GOTO   159
+0156:  MOVLW  01
+0157:  ADDWF  0F,F
+....................                   else ok=ok-1;  
+0158:  GOTO   15B
+0159:  MOVLW  01
+015A:  SUBWF  0F,F
+....................             }//switch  
+....................             porta=0x0a;                                        //no final, o display continua exibindo A, e as saídas de portb são  
+015B:  MOVLW  0A
+015C:  MOVWF  05
+....................             portb=0x00;                                        //todas colocadas em zero, até que nenhum botão seja pressionado.  
+015D:  CLRF   06
+....................      		   while(portb!=0x70)                                   
+....................                delay_ms(10);  
+015E:  MOVF   06,W
+015F:  SUBLW  70
+0160:  BTFSC  03.2
+0161:  GOTO   166
+0162:  MOVLW  0A
+0163:  MOVWF  1C
+0164:  CALL   088
+0165:  GOTO   15E
+....................             if (tenta==3){                                     //se houver 3 tentativas com erro, o programa trava por um tempo  
+0166:  MOVF   11,W
+0167:  SUBLW  03
+0168:  BTFSS  03.2
+0169:  GOTO   174
+....................                bit_set(portb,7);                               //e depois reinicia a contagem de tentativas.  
+016A:  BSF    06.7
+....................                delay_ms(2500);  
+016B:  MOVLW  0A
+016C:  MOVWF  1B
+016D:  MOVLW  FA
+016E:  MOVWF  1C
+016F:  CALL   088
+0170:  DECFSZ 1B,F
+0171:  GOTO   16D
+....................                bit_clear(portb,7);  
+0172:  BCF    06.7
+....................                tenta=0;  
+0173:  CLRF   11
+....................             }  
+....................          }//fim for  
+0174:  INCF   10,F
+0175:  GOTO   105
+....................       }//fim while de repetição  
+0176:  GOTO   103
+....................    }//fim geral  
+....................  
+0177:  SLEEP
+
+Configuration Fuses:
+   Word  1: 3FF9   XT NOWDT NOPUT NOPROTECT
