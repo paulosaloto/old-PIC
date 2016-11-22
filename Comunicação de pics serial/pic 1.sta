@@ -1,0 +1,68 @@
+
+ROM used: 1071 (13%)
+          1071 (13%) including unused fragments
+
+          1 Average locations per line
+          5 Average locations per statement
+
+RAM used: 62 (17%) at main() level
+          76 (21%) worst case
+
+Stack used: 5 worst case (out of 8 total available)
+
+Lines Stmts  %   Files
+----- ----- ---  -----
+  303   125  55  pic 1.c
+  330     0   0  ..\..\..\..\..\..\Program Files (x86)\PICC\devices\16F877a.h
+  110    42  18  ..\memória\i2c.c
+  194    62  27  lcdkit1.c
+----- -----
+  937   229 Total
+
+Page ROM  %  RAM   Vol Diff  Functions:
+---- --- --- ---   --- ----  ----------
+0     21   2   1             @delay_ms1
+0      8   1   0             @const103
+0     12   1   1   134  2.2  lcd_send_nibble
+0     22   2   3   262  3.9  lcd_send_byte
+0     47   4   2   449  4.7  lcd_init
+ Inline        4   186  5.5  lcd_gotoxy
+0     53   5   1   272  4.1  lcd_putc
+0     16   1   0    96  2.9  RB_isr
+0    107  10   2  1449  8.8  varredura
+0     37   3   2             @MUL88
+0     52   5   1   468  7.5  def_angulo
+0    282  26   1  2512  7.4  MAIN
+0     16   1   0             @const176
+0     70   7   3             @PSTRINGC7_127
+0     21   2   3             @DIV88
+0     53   5   2             @PRINTF_U_127
+0     10   1   0   742  7.7  @const185
+0     79   7   4             @PSTRINGCN7_127
+0    103  10   6             @PRINTF_D_127
+0      6   1   0  1360  8.3  @const191
+0      9   1   0  2512  7.4  @const192
+
+Program metrics:
+    Functions               12
+    Statements              229
+    Comments                305
+    Volume (V)              15386
+    Difficilty (D)          70.2
+    Effort to implement (E) 1080476
+    Time to implement (T)   16 hours, 40 minutes
+    Est Delivered Bugs (B)  4
+    Cyclomatic Complexity   67
+    Maintainability (MI)    135
+
+ Segment     Used  Free
+-----------  ----  ----
+00000-00003     4  0  
+00004-0002E    43  0  
+0002F-007FF  1024  977  
+00800-00FFF     0  2048  
+01000-017FF     0  2048  
+01800-01FFF     0  2048  
+
+
+

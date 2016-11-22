@@ -1,0 +1,228 @@
+004-005 @READ_PROGRAM_MEMORY8.P1
+004     @WRITE_PROGRAM_MEMORY8.P2
+005     porta
+006     portb
+007     portc
+008     PSP_DATA
+008     lcdkd
+008     portd
+009     lcdkc
+009     porte
+015     CCP_1_LOW
+015     CCP_1
+016     CCP_1_HIGH
+01B     CCP_2
+01B     CCP_2_LOW
+01C     CCP_2_HIGH
+020     @INTERRUPT_AREA
+021     @INTERRUPT_AREA
+022     @INTERRUPT_AREA
+023     @INTERRUPT_AREA
+024     @INTERRUPT_AREA
+025     @INTERRUPT_AREA
+026     @INTERRUPT_AREA
+027     @TRIS_C
+028.0   sentido_ant
+029     angulo_pedido
+02A     angulo_pedido_anterior
+02B-02C valor_pot
+02D-02E erro
+02F-030 integral
+031-032 controle
+033-034 valor_ref
+035-038 valor_aux
+039     num_digitos
+03A     interrupcao
+03B     int_anterior
+03C     tecla
+03D     i
+03E-03F numero
+040     angulo
+041     hora
+042     minutos
+043     segundos
+044     dia
+045     mes
+046     ano
+047     data
+048     resto
+049     horario
+04A     aux_timer
+04B     posicao
+04C     quantidade
+04D-051 igualdade
+052     posicao_inicial
+053     hora2
+054     angulo2
+055     minutos2
+056     segundos2
+057     kp
+058     teste
+059     @PRINTF_D_130.P1
+059     lcd_init.i
+059     MAIN.@SCRATCH1
+059     @PSTRINGC7_130.@SCRATCH1
+05A     @PRINTF_D_130.P1
+05A     lcd_init.@SCRATCH1
+05A     @PSTRINGC7_130.@SCRATCH2
+05B     @PSTRINGC7_130.@SCRATCH3
+05B     @PRINTF_D_130.@SCRATCH1
+05C     @PRINTF_D_130.@SCRATCH2
+05D     @PRINTF_D_130.@SCRATCH3
+05E     @PRINTF_D_130.@SCRATCH4
+05F     @DIV88.P1
+05F     lcd_putc.c
+060     @DIV88.P1
+060     @delay_ms1.P2
+060     lcd_gotoxy.x
+061     lcd_gotoxy.y
+061     @DIV88.@SCRATCH1
+062     lcd_gotoxy.address
+063     lcd_gotoxy.@SCRATCH1
+064     lcd_send_byte.address
+065     lcd_send_byte.n
+066     lcd_send_byte.@SCRATCH1
+067     lcd_send_nibble.n
+068     Define_referencia.faixa
+068.0   funcao_pwm.sentido
+069-06C @SFTOI.P1
+069-06A @DIV1616.P2
+069     Define_referencia.@SCRATCH1
+069     funcao_pwm.@SCRATCH1
+06A     Define_referencia.@SCRATCH2
+06A     funcao_pwm.@SCRATCH2
+06B-06C @DIV1616.P1
+06B-06C @MUL1616.P2
+06B     Define_referencia.@SCRATCH3
+06C     Define_referencia.@SCRATCH4
+06D-070 @ADDFF.P1
+06D-06E @MUL1616.P2
+06D     Define_referencia.@SCRATCH5
+06D     @DIV1616.@SCRATCH1
+06E     Define_referencia.@SCRATCH6
+06F     Define_referencia.@SCRATCH7
+06F     @MUL1616.@SCRATCH1
+070     Define_referencia.@SCRATCH8
+071-074 @ADDFF.P1
+073-076 @FLT.P1
+077     @SCRATCH
+078     @SCRATCH
+078     _RETURN_
+079     @SCRATCH
+07A     @SCRATCH
+07B-07E @MULFF.P1
+07B-07E @FLT.P2
+07B-07C @ITOF.P3
+07F     @INTERRUPT_AREA
+09C.6   C1OUT
+09C.7   C2OUT
+0A0-0A3 @MULFF.P1
+0A0     @ADDFF.@SCRATCH1
+0A0     @FLT.@SCRATCH1
+0A1     @ADDFF.@SCRATCH2
+0A1     @FLT.@SCRATCH2
+0A2     @ADDFF.@SCRATCH3
+0A3     @ADDFF.@SCRATCH4
+0A4     @MULFF.@SCRATCH1
+0A4     @ADDFF.@SCRATCH5
+0A5     @MULFF.@SCRATCH2
+0A5     @ADDFF.@SCRATCH6
+0A6     @MULFF.@SCRATCH3
+0A6     @ADDFF.@SCRATCH7
+0A7     @MULFF.@SCRATCH4
+0A7     @ADDFF.@SCRATCH8
+0A8     @MULFF.@SCRATCH5
+0FF     @INTERRUPT_AREA
+10D-10E @WRITE_PROGRAM_MEMORY8.P1
+10D-10E @READ_PROGRAM_MEMORY8.P2
+17F     @INTERRUPT_AREA
+1FF     @INTERRUPT_AREA
+27F     @INTERRUPT_AREA
+2FF     @INTERRUPT_AREA
+37F     @INTERRUPT_AREA
+3FF     @INTERRUPT_AREA
+47F     @INTERRUPT_AREA
+4FF     @INTERRUPT_AREA
+57F     @INTERRUPT_AREA
+5FF     @INTERRUPT_AREA
+67F     @INTERRUPT_AREA
+6FF     @INTERRUPT_AREA
+77F     @INTERRUPT_AREA
+7FF     @INTERRUPT_AREA
+87F     @INTERRUPT_AREA
+8FF     @INTERRUPT_AREA
+97F     @INTERRUPT_AREA
+9FF     @INTERRUPT_AREA
+A7F     @INTERRUPT_AREA
+AFF     @INTERRUPT_AREA
+B7F     @INTERRUPT_AREA
+BFF     @INTERRUPT_AREA
+C7F     @INTERRUPT_AREA
+CFF     @INTERRUPT_AREA
+D7F     @INTERRUPT_AREA
+DFF     @INTERRUPT_AREA
+E7F     @INTERRUPT_AREA
+EFF     @INTERRUPT_AREA
+F7F     @INTERRUPT_AREA
+FFF     @INTERRUPT_AREA
+
+ROM Allocation:
+05EA  @delay_ms1
+002F  LCD_INIT_STRING
+05FF  lcd_send_nibble
+060B  lcd_send_byte
+0621  lcd_init
+0667  lcd_gotoxy
+0650  lcd_putc
+0233  Define_referencia
+0037  @ITOF
+0054  @MULFF
+00DA  @ADDFF
+0408  @SFTOI
+0456  @FLT
+0516  funcao_pwm
+04A3  @DIV1616
+0583  @MUL1616
+04C8  interrupt_timer0
+0749  MAIN
+05DA  @const198
+0685  @PSTRINGC7_130
+06CD  @DIV88
+06E2  @PRINTF_D_130
+0749  @cinit
+
+
+User Memory space: 
+
+User Memory space: 
+
+Project Directory:
+    C:\Users\Paulo\Documents\Programação\PIC\Comunicação de pics serial\
+
+Project Files:
+    pic 2.c
+    ..\..\..\..\..\..\Program Files (x86)\PICC\devices\16F877a.h
+    ..\memória\i2c.c
+    lcdkit1.c
+
+Units:
+    C:\Users\Paulo\Documents\Programação\PIC\Comunicação de pics serial\pic 2 (main)
+
+Compiler Settings:
+    Processor:      PIC16F877A
+    Pointer Size:   16
+    ADC Range:      0-1023
+    Opt Level:      9
+    Short,Int,Long: UNSIGNED: 1,8,16
+    Float,Double:   32,32
+
+Output Files:
+    Errors:      pic 2.err
+    Ext Symbols: pic 2.esym
+    INHX8:       pic 2.hex
+    Symbols:     pic 2.sym
+    List:        pic 2.lst
+    Debug/COFF:  pic 2.cof
+    Project:     pic 2.PJT
+    Call Tree:   pic 2.tre
+    Statistics:  pic 2.sta

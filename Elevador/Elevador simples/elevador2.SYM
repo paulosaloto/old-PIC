@@ -1,0 +1,29 @@
+005     porta
+006     portb
+00C     @SCRATCH
+00D     @SCRATCH
+00D     _RETURN_
+00F     main.erro
+010     main.aux
+011     main.andar
+012     main.chama
+
+0004  main
+0004  @cinit
+
+Project Files:
+    C:\Documents and Settings\Paulo\Desktop\9\elevador2.c
+    C:\Documents and Settings\Paulo\Desktop\PICC\Devices\16f84.h
+
+Compiler Settings:
+    Processor:      PIC16F84
+    Pointer Size:   8
+    Opt Level:      9
+    Short,Int,Long: 1,8,16
+
+Output Files:
+    Errors:      C:\Documents and Settings\Paulo\Desktop\9\elevador2.err
+    INHX8:       C:\Documents and Settings\Paulo\Desktop\9\elevador2.HEX
+    Symbols:     C:\Documents and Settings\Paulo\Desktop\9\elevador2.SYM
+    List:        C:\Documents and Settings\Paulo\Desktop\9\elevador2.LST
+    Debug/COFF:  C:\Documents and Settings\Paulo\Desktop\9\elevador2.cof

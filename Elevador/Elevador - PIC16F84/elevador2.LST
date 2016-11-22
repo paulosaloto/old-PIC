@@ -1,0 +1,438 @@
+CCS PCM C Compiler, Version 3.207, 16465               17-dez-10 20:06
+
+               Filename: C:\Documents and Settings\Paulo\Desktop\9\elevador2.LST
+
+               ROM used: 266 words (26%)
+                         Largest free fragment is 758
+               RAM used: 6 (9%) at main() level
+                         6 (9%) worst case
+               Stack:    0 locations
+
+*
+0000:  MOVLW  00
+0001:  MOVWF  0A
+0002:  GOTO   004
+0003:  NOP
+....................  //programa ELEVADOR  
+....................   
+.................... #include	<16f84.h> 
+....................  //////// Standard Header file for the PIC16F84 device ////////////////  
+.................... #device PIC16F84  
+.................... #list  
+....................  
+....................   
+.................... #fuses	XT, NOWDT, NOPROTECT			   	                                      //condições de compilação relativas ao hardware  
+.................... #use delay	(clock=4000000)                                                     //(em relação ao osc; ao watchdog; ao travar o codigo)  
+.................... #byte porta=5  
+.................... #byte portb=6	                                       				              //para o pic identificar a porta (portb=6 e porta=5)  
+....................   
+....................   
+....................   
+....................    void main ()  
+....................    {  
+0004:  CLRF   04
+0005:  MOVLW  1F
+0006:  ANDWF  03,F
+....................   
+....................       int erro,aux,andar=4,chama=0;                                               //é possivel realizar até duas chamadas ao mesmo tempo  
+0007:  MOVLW  04
+0008:  MOVWF  11
+0009:  CLRF   12
+....................   
+....................   
+....................       set_tris_b (0x3F);                                                        //define entradas e saídas  
+000A:  MOVLW  3F
+000B:  TRIS   6
+....................       set_tris_a (0x00);  
+000C:  MOVLW  00
+000D:  TRIS   5
+....................       port_b_pullups (true);                                                    //seta o pull up  
+000E:  BSF    03.5
+000F:  BCF    01.7
+....................       porta=0x0e;  
+0010:  MOVLW  0E
+0011:  BCF    03.5
+0012:  MOVWF  05
+....................       portb=0;  
+0013:  CLRF   06
+....................   
+....................   
+....................       while (andar==4)                                                          //para iniciar o programa, deve-se mostrar  
+....................       {                                                                         //onde está o elevador inicialmente.  
+0014:  MOVF   11,W
+0015:  SUBLW  04
+0016:  BTFSS  03.2
+0017:  GOTO   025
+....................          if (!bit_test(portb,3))  
+0018:  BTFSC  06.3
+0019:  GOTO   01C
+....................             andar=1;  
+001A:  MOVLW  01
+001B:  MOVWF  11
+....................          if (!bit_test(portb,4))  
+001C:  BTFSC  06.4
+001D:  GOTO   020
+....................             andar=2;  
+001E:  MOVLW  02
+001F:  MOVWF  11
+....................          if (!bit_test(portb,5))  
+0020:  BTFSC  06.5
+0021:  GOTO   024
+....................             andar=3;  
+0022:  MOVLW  03
+0023:  MOVWF  11
+....................          }  
+0024:  GOTO   014
+....................   
+....................       porta=andar;                                                              //mostra o andar inicial no display.  
+0025:  MOVF   11,W
+0026:  MOVWF  05
+....................                                                                                 //caso esteja no terreo, temos andar=1; e o display mostra  
+....................       while (1)                                                                 //o numero 1  
+....................       {  
+....................   
+....................          if (!bit_test(portb,0)) chama=1;                                        //aqui são testadas as chamadas.  
+0027:  BTFSC  06.0
+0028:  GOTO   02B
+0029:  MOVLW  01
+002A:  MOVWF  12
+....................   
+....................          if (!bit_test(portb,1)) chama=2;  
+002B:  BTFSC  06.1
+002C:  GOTO   02F
+002D:  MOVLW  02
+002E:  MOVWF  12
+....................   
+....................          if (!bit_test(portb,2)) chama=3;  
+002F:  BTFSC  06.2
+0030:  GOTO   033
+0031:  MOVLW  03
+0032:  MOVWF  12
+....................   
+....................          if (!bit_test(portb,3)) erro=erro+1;                                    //é verificado se há mais de um fim de curso pressionado  
+0033:  BTFSC  06.3
+0034:  GOTO   037
+0035:  MOVLW  01
+0036:  ADDWF  0F,F
+....................          if (!bit_test(portb,4)) erro=erro+1;                                    //ao mesmo tempo. caso seja, aparece E no display  
+0037:  BTFSC  06.4
+0038:  GOTO   03B
+0039:  MOVLW  01
+003A:  ADDWF  0F,F
+....................          if (!bit_test(portb,5)) erro=erro+1;  
+003B:  BTFSC  06.5
+003C:  GOTO   03F
+003D:  MOVLW  01
+003E:  ADDWF  0F,F
+....................           
+....................          while (erro>1) porta=0x0e;  
+003F:  MOVF   0F,W
+0040:  SUBLW  01
+0041:  BTFSC  03.0
+0042:  GOTO   046
+0043:  MOVLW  0E
+0044:  MOVWF  05
+0045:  GOTO   03F
+....................          erro=0;  
+0046:  CLRF   0F
+....................   
+....................       while (bit_test(portb,5) && bit_test(portb,4) && bit_test(portb,3) && chama==0) porta=0x0e;//é testado se o elevador está fora de um fim  
+0047:  BTFSS  06.5
+0048:  GOTO   053
+0049:  BTFSS  06.4
+004A:  GOTO   053
+004B:  BTFSS  06.3
+004C:  GOTO   053
+004D:  MOVF   12,F
+004E:  BTFSS  03.2
+004F:  GOTO   053
+0050:  MOVLW  0E
+0051:  MOVWF  05
+0052:  GOTO   047
+....................                                                                                  //de curso sem que uma chamada tenha sido feita  
+....................          if(chama>andar){                                                          
+0053:  MOVF   12,W
+0054:  SUBWF  11,W
+0055:  BTFSC  03.0
+0056:  GOTO   05B
+....................             aux=1;                                                               //se for feita uma chamada para um andar acima, o led de   
+0057:  MOVLW  01
+0058:  MOVWF  10
+....................             bit_set(portb,6);                                                    //subida acende e a variável auxiliar fica =1  
+0059:  BSF    06.6
+....................          }  
+....................          else if (chama!=0 && chama<andar){                                      //se for a um andar abaixo, é verificada se houve uma chamda  
+005A:  GOTO   067
+005B:  MOVF   12,F
+005C:  BTFSC  03.2
+005D:  GOTO   066
+005E:  MOVF   11,W
+005F:  SUBWF  12,W
+0060:  BTFSC  03.0
+0061:  GOTO   066
+....................                aux=2;                                                            //a variavel aux fica =2 e o led de descida setado  
+0062:  MOVLW  02
+0063:  MOVWF  10
+....................                bit_set(portb,7);  
+0064:  BSF    06.7
+....................             }  
+....................             else aux=0;                                                          //se a chamada for igual ao andar, aux=0.  
+0065:  GOTO   067
+0066:  CLRF   10
+....................   
+....................   
+....................          if (chama!='\0')                                                        //caso haja a chamada, terão os 5 casos seguintes:  
+0067:  MOVF   12,F
+0068:  BTFSC  03.2
+0069:  GOTO   106
+....................          switch (aux){  
+006A:  MOVF   10,W
+006B:  XORLW  00
+006C:  BTFSC  03.2
+006D:  GOTO   075
+006E:  XORLW  01
+006F:  BTFSC  03.2
+0070:  GOTO   078
+0071:  XORLW  03
+0072:  BTFSC  03.2
+0073:  GOTO   0BE
+0074:  GOTO   106
+....................   
+....................          case (0):  
+....................             bit_clear(portb,7);                                                  //se for chamado para o mesmo andar, os leds apagam.  
+0075:  BCF    06.7
+....................             bit_clear(portb,6);  
+0076:  BCF    06.6
+....................             chama=0;  
+0077:  CLRF   12
+....................   
+....................   
+....................          case (1):                                                               //se for chamado para um andar acima, pode estar chamando  
+....................             switch (andar){                                                      //a partir do 2º, o que faz ser finalizado apenas  
+0078:  MOVF   11,W
+0079:  XORLW  02
+007A:  BTFSC  03.2
+007B:  GOTO   080
+007C:  XORLW  03
+007D:  BTFSC  03.2
+007E:  GOTO   09D
+007F:  GOTO   0BD
+....................                case(2):                                                          //quando o elevador chega no 3º  
+....................                while(andar==2){  
+0080:  MOVF   11,W
+0081:  SUBLW  02
+0082:  BTFSS  03.2
+0083:  GOTO   09C
+....................                   if(chama==0)break;  
+0084:  MOVF   12,F
+0085:  BTFSC  03.2
+0086:  GOTO   09C
+....................                   if (bit_test(portb,4)){  
+0087:  BTFSS  06.4
+0088:  GOTO   094
+....................                      if (!bit_test(portb,5)){                                    //testando aqui se ele ja saiu do 2º e chegou no 3º. se sim o led apaga  
+0089:  BTFSC  06.5
+008A:  GOTO   08E
+....................                         andar=3;  
+008B:  MOVLW  03
+008C:  MOVWF  11
+....................                         bit_clear(portb,6);  
+008D:  BCF    06.6
+....................                      }  
+....................                      while (!bit_test(portb,3)) porta=0x0e;                      //se for pressionada a porta de direção contrária ou  
+008E:  BTFSC  06.3
+008F:  GOTO   093
+0090:  MOVLW  0E
+0091:  MOVWF  05
+0092:  GOTO   08E
+....................                   }                                                              //as outras portas enquanto ele ainda está no 2º andar, sinaliza erro  
+....................                   else while(!bit_test(portb,3) || !bit_test(portb,5)) porta=0x0e;  
+0093:  GOTO   09B
+0094:  BTFSS  06.3
+0095:  GOTO   098
+0096:  BTFSC  06.5
+0097:  GOTO   09B
+0098:  MOVLW  0E
+0099:  MOVWF  05
+009A:  GOTO   094
+....................   
+....................                }  
+009B:  GOTO   080
+....................                break;  
+009C:  GOTO   0BD
+....................   
+....................                case(1):                                                          //neste caso, partindo do 1º andar, é realizado procedimento  
+....................                while(andar==1){                                                  //parecido com o anterior, a diferença é que quando ele chega no 2º  
+009D:  DECFSZ 11,W
+009E:  GOTO   0BC
+....................                   if(chama==0)break;                                             //andar ele pergunta se foi aquele o andar desejado. se não, o led continua  
+009F:  MOVF   12,F
+00A0:  BTFSC  03.2
+00A1:  GOTO   0BC
+....................                   if (bit_test(portb,3)){                                        //aceso. se sim, o led apaga e volta o processo todo.  
+00A2:  BTFSS  06.3
+00A3:  GOTO   0B4
+....................                      if (!bit_test(portb,4)){  
+00A4:  BTFSC  06.4
+00A5:  GOTO   0AE
+....................                         andar=2;  
+00A6:  MOVLW  02
+00A7:  MOVWF  11
+....................                         if(chama==andar){  
+00A8:  MOVF   11,W
+00A9:  SUBWF  12,W
+00AA:  BTFSS  03.2
+00AB:  GOTO   0AE
+....................                            chama=0;  
+00AC:  CLRF   12
+....................                            bit_clear(portb,6);  
+00AD:  BCF    06.6
+....................                         }  
+....................                      }  
+....................                      while(!bit_test(portb,5)) porta=0x0e;  
+00AE:  BTFSC  06.5
+00AF:  GOTO   0B3
+00B0:  MOVLW  0E
+00B1:  MOVWF  05
+00B2:  GOTO   0AE
+....................                   }  
+....................                   else while(!bit_test(portb,5) || !bit_test(portb,4)) porta=0x0e;  
+00B3:  GOTO   0BB
+00B4:  BTFSS  06.5
+00B5:  GOTO   0B8
+00B6:  BTFSC  06.4
+00B7:  GOTO   0BB
+00B8:  MOVLW  0E
+00B9:  MOVWF  05
+00BA:  GOTO   0B4
+....................                }  
+00BB:  GOTO   09D
+....................                break;  
+00BC:  GOTO   0BD
+....................   
+....................   
+....................             }  
+....................          break;  
+00BD:  GOTO   106
+....................   
+....................          case(2):                                                                //o mesmo procedimento de subida pode ser aplicado analogamente  
+....................                switch (andar){                                                   // a descida, mas invertendo as variáveis. ou seja, quando está   
+00BE:  MOVF   11,W
+00BF:  XORLW  03
+00C0:  BTFSC  03.2
+00C1:  GOTO   0C6
+00C2:  XORLW  01
+00C3:  BTFSC  03.2
+00C4:  GOTO   0E8
+00C5:  GOTO   105
+....................                   case(3):                                                       // no 2º pergunta se chegou no 1º, e quando está no 3º pergunta se  
+....................                   while(andar==3){                                               // chegou no 2º e se era este o andar desejado.  
+00C6:  MOVF   11,W
+00C7:  SUBLW  03
+00C8:  BTFSS  03.2
+00C9:  GOTO   0E7
+....................                      if(chama==0)break;                                          //quando já está no 1º não tem sentido haver descida.  
+00CA:  MOVF   12,F
+00CB:  BTFSC  03.2
+00CC:  GOTO   0E7
+....................                      if (bit_test(portb,5)){  
+00CD:  BTFSS  06.5
+00CE:  GOTO   0DF
+....................                         if (!bit_test(portb,4)){  
+00CF:  BTFSC  06.4
+00D0:  GOTO   0D9
+....................                            andar=2;  
+00D1:  MOVLW  02
+00D2:  MOVWF  11
+....................                            if(chama==andar){  
+00D3:  MOVF   11,W
+00D4:  SUBWF  12,W
+00D5:  BTFSS  03.2
+00D6:  GOTO   0D9
+....................                               chama=0;  
+00D7:  CLRF   12
+....................                               bit_clear(portb,7);  
+00D8:  BCF    06.7
+....................                            }  
+....................                         }  
+....................                         while(!bit_test(portb,3)) porta=0x0e;  
+00D9:  BTFSC  06.3
+00DA:  GOTO   0DE
+00DB:  MOVLW  0E
+00DC:  MOVWF  05
+00DD:  GOTO   0D9
+....................                      }  
+....................                      else while(!bit_test(portb,3) || !bit_test(portb,4)) porta=0x0e;  
+00DE:  GOTO   0E6
+00DF:  BTFSS  06.3
+00E0:  GOTO   0E3
+00E1:  BTFSC  06.4
+00E2:  GOTO   0E6
+00E3:  MOVLW  0E
+00E4:  MOVWF  05
+00E5:  GOTO   0DF
+....................   
+....................                   }  
+00E6:  GOTO   0C6
+....................                   break;  
+00E7:  GOTO   105
+....................   
+....................                   case(2):  
+....................                   while(andar==2){  
+00E8:  MOVF   11,W
+00E9:  SUBLW  02
+00EA:  BTFSS  03.2
+00EB:  GOTO   104
+....................                      if(chama==0)break;  
+00EC:  MOVF   12,F
+00ED:  BTFSC  03.2
+00EE:  GOTO   104
+....................                      if (bit_test(portb,4)){  
+00EF:  BTFSS  06.4
+00F0:  GOTO   0FC
+....................                         if (!bit_test(portb,3)){  
+00F1:  BTFSC  06.3
+00F2:  GOTO   0F6
+....................                            andar=1;  
+00F3:  MOVLW  01
+00F4:  MOVWF  11
+....................                            bit_clear(portb,7);  
+00F5:  BCF    06.7
+....................                         }  
+....................                         while (!bit_test(portb,5)) porta=0x0e;  
+00F6:  BTFSC  06.5
+00F7:  GOTO   0FB
+00F8:  MOVLW  0E
+00F9:  MOVWF  05
+00FA:  GOTO   0F6
+....................                      }  
+....................                      else while(!bit_test(portb,3) || !bit_test(portb,5)) porta=0x0e;  
+00FB:  GOTO   103
+00FC:  BTFSS  06.3
+00FD:  GOTO   100
+00FE:  BTFSC  06.5
+00FF:  GOTO   103
+0100:  MOVLW  0E
+0101:  MOVWF  05
+0102:  GOTO   0FC
+....................                   }  
+0103:  GOTO   0E8
+....................   
+....................                   break;  
+0104:  GOTO   105
+....................                }  
+....................             break;  
+0105:  GOTO   106
+....................          }  
+....................   
+....................       porta=andar;                                                               //no final do processo, os switchs abertos são fechados, e   
+0106:  MOVF   11,W
+0107:  MOVWF  05
+....................       }                                                                          //o andar no qual o elevador se encontra é mostrado no display  
+0108:  GOTO   027
+....................    }                                                                             //através do PORTA  
+....................  
+0109:  SLEEP
+
+Configuration Fuses:
+   Word  1: 3FF9   XT NOWDT NOPUT NOPROTECT

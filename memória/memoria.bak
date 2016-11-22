@@ -1,0 +1,61 @@
+// Este programa realiza a contagem de 0 a 255 nos leds do Kit SD-1700.
+
+#include <16F877.h>             //Inclue a biblioteca 16F877a.h, disponível em
+                                 // c:\Arquivos de programas\PICC\Devices
+
+#fuses XT,NOWDT,NOPROTECT,PUT    //Define para o compilador: a faixa de frequência do clock (pode ser LS, XT, HS),
+                                 //não uso do watchdog timer,
+#define EEPROM_SDA  PIN_c4
+#define EEPROM_SCL  PIN_c3                                 //não uso de proteção de código,
+                                //uso do Power-up-timer, temporizador utilizado para inicialização do PIC.
+#include <24256.c>
+
+#use delay(clock=4000000)        //Define a frequência de clock.
+
+#use I2C(slow)
+
+#use fast_io(a)
+#use fast_io(b)
+#use fast_io(c)
+#use fast_io(d)
+#use fast_io(e)
+
+#byte SSPSTAT = 0x94
+#byte porta = 5
+#byte portb = 6
+#byte portc = 7
+#byte portd = 8
+#byte porte = 9
+
+
+
+void main()
+{
+
+   // Configuração de vias das portas do PIC como saída ou como entrada.
+   // Se o bit 0 do registrador especial TRISA é 0, a via 0 da portA do PIC é saída, caso contrário é entrada.
+   // Assim são configuradas todas as vias das portas do PIC, de qualquer porta.
+   // Exemplo: TRISA = | 0 | 1 | 0 | 1 | 0 | 1 | -> PORTA = | S | E | S | E | S | E | , no 16F877A a portA tem 6 vias.
+   bit_clear(SSPSTAT,6);
+   set_tris_a(0x00); // Define que todas as vias da portA do PIC serão saídas.
+   set_tris_d(0x00); // Define que todas as vias da portD do PIC serão saídas.
+   set_tris_b(0xF0);
+   portb=0xff;
+   set_tris_c(0xff);
+   bit_set(porta,4); // Ativa os leds, saturando o transistor chave no catodo comum dos leds. Vide página 13 do manual.
+   port_b_pullups(TRUE);
+   portd = 0xc2;
+   //portc = 0x0F;// Define todos os leds acesos inicialmente, valor inicial da contagem FF (zero).
+   init_ext_eeprom();
+   int data1=0, data2=0x36;
+   while (1){
+   
+   write_ext_eeprom(15, data2);
+   delay_ms(300);
+   data1 = read_ext_eeprom(15);
+   portd=data1;
+   data2=data2+1;
+   }
+}
+
+
